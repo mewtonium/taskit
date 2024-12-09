@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\Priority;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -33,6 +34,12 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'auth' => [
                 'user' => $request->user(),
+            ],
+            'app' => [
+                'tasks' => [
+                    'priorities' => collect(Priority::cases())->mapWithKeys(fn (Priority $case) => [$case->name => $case->value]),
+                    'defaultPriority' => Priority::NORMAL,
+                ],
             ],
         ];
     }
