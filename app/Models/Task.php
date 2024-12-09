@@ -21,9 +21,7 @@ class Task extends Model
         'title',
         'notes',
         'priority',
-        'started_at',
-        'completed_at',
-        'cancelled_at',
+        'start_at',
     ];
 
     /**
@@ -35,9 +33,8 @@ class Task extends Model
     {
         return [
             'priority' => Priority::class,
-            'started_at' => 'datetime',
+            'start_at' => 'date',
             'completed_at' => 'datetime',
-            'cancelled_at' => 'datetime',
         ];
     }
 

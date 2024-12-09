@@ -19,6 +19,7 @@ class TaskStoreRequest extends FormRequest
             'title' => ['required', 'string', 'max:255'],
             'notes' => ['nullable'],
             'priority' => ['required', new Rules\Enum(Priority::class)],
+            'start_at' => ['nullable', 'sometimes', 'date', 'date_format:Y-m-d', 'after_or_equal:today'],
         ];
     }
 }

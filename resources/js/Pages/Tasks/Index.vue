@@ -8,8 +8,10 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import Textarea from '@/Components/Textarea.vue';
 import Select from '@/Components/Select.vue';
+import Datepicker from '@/Components/Datepicker.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
+import Checkbox from '@/Components/Checkbox.vue';
 import Modal from '@/Components/Modal.vue';
 import { titleCase } from '@/helpers';
 
@@ -27,6 +29,7 @@ const form = useForm({
     title: '',
     notes: '',
     priority: usePage().props.app.tasks.defaultPriority,
+    start_at: '',
 });
 
 const createTask = () => {
@@ -64,6 +67,8 @@ const taskPriorityOptions = () => {
 
     return options;
 };
+
+const minStartDate = dayjs().format('YYYY-MM-DD');
 </script>
 
 <template>
@@ -107,7 +112,18 @@ const taskPriorityOptions = () => {
                         </p>
 
                         <template v-else>
-                                
+                            <div class="divide-y">
+                                <div v-for="task in tasks" :key="task.id" class="py-2 flex justify-between">
+                                    <div class="text-left text-gray-900 dark:text-gray-100 flex items-center w-3/4">
+                                        <Checkbox :checked="task.completed_at !== null" class="mr-3" />
+                                        <span :class="{ 'line-through text-gray-300 dark:text-gray-700': task.completed_at !== null }" v-text="task.title" />
+                                    </div>
+
+                                    <div class="w-1/4 text-right">
+                                        [controls]
+                                    </div>
+                                </div>
+                            </div>
                         </template>
                     </div>
                 </div>
@@ -149,18 +165,34 @@ const taskPriorityOptions = () => {
                         <InputError class="mt-2" :message="form.errors.title" />
                     </div>
 
-                    <!-- Priority -->
-                    <div>
-                        <InputLabel for="priority" value="Priority" />
+                    <div class="grid grid-cols-2 gap-4">
+                        <!-- Priority -->
+                        <div>
+                            <InputLabel for="priority" value="Priority" />
 
-                        <Select
-                            id="priority"
-                            class="mt-1 block w-full"
-                            v-model="form.priority"
-                            :options="taskPriorityOptions()"
-                        />
+                            <Select
+                                id="priority"
+                                class="mt-1 block w-full"
+                                v-model="form.priority"
+                                :options="taskPriorityOptions()"
+                            />
 
-                        <InputError class="mt-2" :message="form.errors.priority" />
+                            <InputError class="mt-2" :message="form.errors.priority" />
+                        </div>
+
+                        <!-- Start At -->
+                        <div>
+                            <InputLabel for="start_at" value="Start At" />
+
+                            <Datepicker
+                                id="start_at"
+                                class="mt-1 block w-full"
+                                v-model="form.start_at"
+                                :min="minStartDate"
+                            />
+
+                            <InputError class="mt-2" :message="form.errors.start_at" />
+                        </div>
                     </div>
                 </div>
 

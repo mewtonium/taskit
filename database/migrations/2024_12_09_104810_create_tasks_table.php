@@ -18,9 +18,8 @@ return new class extends Migration
             $table->string('title');
             $table->text('notes')->nullable();
             $table->unsignedTinyInteger('priority')->default(Priority::NORMAL);
-            $table->datetime('started_at')->nullable();
+            $table->date('start_at')->nullable();
             $table->datetime('completed_at')->nullable();
-            $table->datetime('cancelled_at')->nullable();
             $table->timestamps();
         });
     }
