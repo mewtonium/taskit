@@ -154,7 +154,7 @@ const minStartDate = dayjs().format('YYYY-MM-DD');
 
                     <!-- Notes -->
                     <div>
-                        <InputLabel for="notes" value="Notes" />
+                        <InputLabel for="notes" value="Notes" :optional="true" />
 
                         <Textarea
                             id="notes"
@@ -182,7 +182,7 @@ const minStartDate = dayjs().format('YYYY-MM-DD');
 
                         <!-- Start At -->
                         <div>
-                            <InputLabel for="start_at" value="Start At" />
+                            <InputLabel for="start_at" value="Start At" :optional="true" />
 
                             <Datepicker
                                 id="start_at"
