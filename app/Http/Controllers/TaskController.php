@@ -25,7 +25,7 @@ class TaskController extends Controller
     {
         $request->user()->tasks()->create($request->validated());
 
-        return redirect()->back();
+        return redirect()->route('tasks.index');
     }
 
     /**
