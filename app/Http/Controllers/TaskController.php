@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TaskStoreRequest;
+use App\Models\Task;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
 class TaskController extends Controller
@@ -39,8 +41,12 @@ class TaskController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Task $task)
     {
-        //
+        Gate::authorize('delete', $task);
+
+        $task->delete();
+
+        return redirect()->route('tasks.index');
     }
 }
