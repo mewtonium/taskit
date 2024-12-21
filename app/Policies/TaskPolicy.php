@@ -8,7 +8,7 @@ use App\Models\User;
 class TaskPolicy
 {
     /**
-     * Determine whether the user can update the model.
+     * Determine whether the user can update the task.
      */
     public function update(User $user, Task $task): bool
     {
@@ -16,7 +16,7 @@ class TaskPolicy
     }
 
     /**
-     * Determine whether the user can delete the model.
+     * Determine whether the user can delete the task.
      */
     public function delete(User $user, Task $task): bool
     {

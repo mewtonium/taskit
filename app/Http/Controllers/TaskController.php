@@ -33,9 +33,13 @@ class TaskController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(TaskStoreRequest $request, Task $task)
     {
-        //
+        Gate::authorize('update', $task);
+
+        $task->update($request->validated());
+
+        return redirect()->route('tasks.index');
     }
 
     /**
@@ -46,6 +50,20 @@ class TaskController extends Controller
         Gate::authorize('delete', $task);
 
         $task->delete();
+
+        return redirect()->route('tasks.index');
+    }
+
+    /**
+     * Mark the task as completed.
+     */
+    public function complete(Task $task)
+    {
+        Gate::authorize('update', $task);
+
+        $task->update([
+            'completed_at' => $task->completed_at === null ? now() : null,
+        ]);
 
         return redirect()->route('tasks.index');
     }

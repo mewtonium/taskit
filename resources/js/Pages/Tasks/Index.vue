@@ -1,6 +1,6 @@
 <script setup>
 import { Head, useForm, usePage } from '@inertiajs/vue3';
-import { nextTick, ref } from 'vue';
+import { nextTick, ref, computed } from 'vue';
 
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -11,9 +11,10 @@ import Select from '@/Components/Select.vue';
 import Datepicker from '@/Components/Datepicker.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
-import Checkbox from '@/Components/Checkbox.vue';
 import Modal from '@/Components/Modal.vue';
+import EditTask from '@/Components/Tasks/EditTask.vue';
 import DeleteTask from '@/Components/Tasks/DeleteTask.vue';
+import CompleteTask from '@/Components/Tasks/CompleteTask.vue';
 import { titleCase } from '@/helpers';
 
 const props = defineProps({
@@ -23,7 +24,7 @@ const props = defineProps({
     },
 });
 
-const taskPriorityOptions = () => {
+const taskPriorityOptions = computed(() => {
     const priorities = Object.entries(usePage().props.app.tasks.priorities).sort((a, b) => a[1] - b[1]); // sort by priority value asc
     const options = [];
 
@@ -32,15 +33,18 @@ const taskPriorityOptions = () => {
     }
 
     return options;
-};
+});
 
 const minStartDate = dayjs().format('YYYY-MM-DD');
+
+const taskAction = ref('create');
 
 /**
  * Creating/updating a task
  */
 const taskModalOpen = ref(false);
 const taskTitleInput = ref(null);
+const taskToEdit = ref(null);
 
 const taskForm = useForm({
     title: '',
@@ -61,14 +65,38 @@ const createTask = () => {
     });
 };
 
-const openTaskModal = () => {
+const updateTask = (task) => {
+    taskForm.put(route('tasks.update', { task: task.id }), {
+        preserveScroll: true,
+        onSuccess: () => {
+            closeTaskModal();
+
+            taskForm.clearErrors();
+            taskForm.reset();
+        },
+    });
+};
+
+const openTaskModal = (event, task = null) => {
     taskModalOpen.value = true;
+
+    if (task !== null) {
+        taskForm.title = task.title;
+        taskForm.notes = task.notes;
+        taskForm.priority = task.priority;
+        taskForm.start_at = task.start_at !== null ? dayjs(task.start_at).format('YYYY-MM-DD') : null;
+
+        taskAction.value = 'update';
+        taskToEdit.value = task;
+    }
 
     nextTick(() => taskTitleInput.value.focus());
 };
 
 const closeTaskModal = () => {
     taskModalOpen.value = false;
+    taskAction.value = 'create';
+    taskToEdit.value = null;
 
     taskForm.clearErrors();
     taskForm.reset();
@@ -94,11 +122,13 @@ const deleteTask = () => {
 const openDeleteTaskModal = (task) => {
     deleteTaskModalOpen.value = true;
     taskToDelete.value = task;
+    taskAction.value = 'delete';
 };
 
 const closeDeleteTaskModal = () => {
     deleteTaskModalOpen.value = false;
     taskToDelete.value = null;
+    taskAction.value = '';
 };
 </script>
 
@@ -121,12 +151,21 @@ const closeDeleteTaskModal = () => {
                         leave-active-class="transition ease-in-out"
                         leave-to-class="opacity-0"
                     >
-                        <p
-                            v-if="taskForm.recentlySuccessful"
-                            class="text-sm text-gray-600 dark:text-gray-400 mr-4"
-                        >
-                            Saved.
-                        </p>
+                        <template>
+                            <p
+                                v-if="taskForm.recentlySuccessful"
+                                class="text-sm text-gray-600 dark:text-gray-400 mr-4"
+                            >
+                                Saved.
+                            </p>
+
+                            <p
+                                v-if="deleteTaskForm.recentlySuccessful"
+                                class="text-sm text-gray-600 dark:text-gray-400 mr-4"
+                            >
+                                Deleted.
+                            </p>
+                        </template>
                     </Transition>
 
                     <PrimaryButton @click="openTaskModal" :disabled="taskForm.processing">New Task</PrimaryButton>
@@ -146,11 +185,12 @@ const closeDeleteTaskModal = () => {
                             <div class="divide-y">
                                 <div v-for="task in tasks" :key="task.id" class="py-2 flex justify-between">
                                     <div class="text-left text-gray-900 dark:text-gray-100 flex items-center w-3/4">
-                                        <Checkbox :checked="task.completed_at !== null" class="mr-3" />
+                                        <CompleteTask :task="task" class="mr-3" @taskCompleted="(task, complete) => console.log(task, complete)" />
                                         <span :class="{ 'line-through text-gray-300 dark:text-gray-700': task.completed_at !== null }" v-text="task.title" />
                                     </div>
 
-                                    <div class="w-1/4 text-right space-x-1">
+                                    <div class="w-1/4 text-right space-x-2">
+                                        <EditTask :task="task" @editTask="task => openTaskModal($event, task)" />
                                         <DeleteTask :task="task" @deleteTask="task => openDeleteTaskModal(task)" />
                                     </div>
                                 </div>
@@ -165,7 +205,7 @@ const closeDeleteTaskModal = () => {
         <Modal :show="taskModalOpen" @close="closeTaskModal">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-8">
-                    Create New Task
+                    {{ taskAction === 'update' ? 'Update Task' : 'Create New Task' }}
                 </h2>
 
                 <div class="space-y-6">
@@ -206,7 +246,7 @@ const closeDeleteTaskModal = () => {
                                 id="priority"
                                 class="mt-1 block w-full"
                                 v-model="taskForm.priority"
-                                :options="taskPriorityOptions()"
+                                :options="taskPriorityOptions"
                             />
 
                             <InputError class="mt-2" :message="taskForm.errors.priority" />
@@ -237,7 +277,7 @@ const closeDeleteTaskModal = () => {
                         class="ms-3"
                         :class="{ 'opacity-25': taskForm.processing }"
                         :disabled="taskForm.processing"
-                        @click="createTask"
+                        @click="() => taskAction === 'update' ? updateTask(taskToEdit) : createTask()"
                     >
                         Save
                     </PrimaryButton>
