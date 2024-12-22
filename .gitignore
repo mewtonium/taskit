@@ -6,9 +6,13 @@
 /storage/*.key
 /storage/pail
 /vendor
+/tests/Browser/console
+/tests/Browser/screenshots
+/tests/Browser/source
 .env
 .env.backup
 .env.production
+.env.dusk.*
 .phpactor.json
 .phpunit.result.cache
 Homestead.json

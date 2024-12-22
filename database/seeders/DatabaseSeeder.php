@@ -24,8 +24,8 @@ class DatabaseSeeder extends Seeder
         User::factory()
             ->has($tasks)
             ->create([
-                'name' => 'Test Test',
-                'email' => 'test@test.com',
+                'name' => 'Mark Wilkinson',
+                'email' => 'mark@example.com',
             ]);
     }
 }

@@ -138,7 +138,7 @@ const closeDeleteTaskModal = () => {
     <AuthenticatedLayout>
         <template #header>
             <h2 class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                Tasks
+                Hello, {{ $page.props.auth.user.first_name }}!
             </h2>
         </template>
 
@@ -168,7 +168,7 @@ const closeDeleteTaskModal = () => {
                         </template>
                     </Transition>
 
-                    <PrimaryButton @click="openTaskModal" :disabled="taskForm.processing">New Task</PrimaryButton>
+                    <PrimaryButton @click="openTaskModal" :disabled="taskForm.processing" dusk="create-task">New Task</PrimaryButton>
                 </div>
 
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
@@ -183,15 +183,15 @@ const closeDeleteTaskModal = () => {
 
                         <template v-else>
                             <div class="divide-y">
-                                <div v-for="task in tasks" :key="task.id" class="py-2 flex justify-between">
+                                <div v-for="task in tasks" :key="task.id" class="task py-2 flex justify-between">
                                     <div class="text-left text-gray-900 dark:text-gray-100 flex items-center w-3/4">
-                                        <CompleteTask :task="task" class="mr-3" @taskCompleted="(task, complete) => console.log(task, complete)" />
-                                        <span :class="{ 'line-through text-gray-300 dark:text-gray-700': task.completed_at !== null }" v-text="task.title" />
+                                        <CompleteTask :task="task" class="task__complete mr-3" @taskCompleted="(task, complete) => console.log(task, complete)" :dusk="`complete-task--${task.id}`" />
+                                        <span class="task__title" :class="{ 'line-through text-gray-300 dark:text-gray-700': task.completed_at !== null }" v-text="task.title" />
                                     </div>
 
                                     <div class="w-1/4 text-right space-x-2">
-                                        <EditTask :task="task" @editTask="task => openTaskModal($event, task)" />
-                                        <DeleteTask :task="task" @deleteTask="task => openDeleteTaskModal(task)" />
+                                        <EditTask class="task__edit" :task="task" @editTask="task => openTaskModal($event, task)" :dusk="`edit-task--${task.id}`" />
+                                        <DeleteTask class="task__delete" :task="task" @deleteTask="task => openDeleteTaskModal(task)" :dusk="`delete-task--${task.id}`" />
                                     </div>
                                 </div>
                             </div>
@@ -219,6 +219,7 @@ const closeDeleteTaskModal = () => {
                             class="mt-1 block w-full"
                             v-model="taskForm.title"
                             ref="taskTitleInput"
+                            dusk="title"
                         />
 
                         <InputError class="mt-2" :message="taskForm.errors.title" />
@@ -232,6 +233,7 @@ const closeDeleteTaskModal = () => {
                             id="notes"
                             class="mt-1 block w-full"
                             v-model="taskForm.notes"
+                            dusk="notes"
                         />
 
                         <InputError class="mt-2" :message="taskForm.errors.title" />
@@ -247,6 +249,7 @@ const closeDeleteTaskModal = () => {
                                 class="mt-1 block w-full"
                                 v-model="taskForm.priority"
                                 :options="taskPriorityOptions"
+                                dusk="priority"
                             />
 
                             <InputError class="mt-2" :message="taskForm.errors.priority" />
@@ -261,6 +264,7 @@ const closeDeleteTaskModal = () => {
                                 class="mt-1 block w-full"
                                 v-model="taskForm.start_at"
                                 :min="minStartDate"
+                                dusk="start-at"
                             />
 
                             <InputError class="mt-2" :message="taskForm.errors.start_at" />
@@ -278,6 +282,7 @@ const closeDeleteTaskModal = () => {
                         :class="{ 'opacity-25': taskForm.processing }"
                         :disabled="taskForm.processing"
                         @click="() => taskAction === 'update' ? updateTask(taskToEdit) : createTask()"
+                        dusk="save-task"
                     >
                         Save
                     </PrimaryButton>
@@ -306,6 +311,7 @@ const closeDeleteTaskModal = () => {
                         :class="{ 'opacity-25': deleteTaskForm.processing }"
                         :disabled="deleteTaskForm.processing"
                         @click="deleteTask"
+                        dusk="confirm-delete-task"
                     >
                         Yes
                     </PrimaryButton>
