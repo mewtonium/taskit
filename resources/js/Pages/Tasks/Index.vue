@@ -16,6 +16,7 @@ import EditTask from '@/Components/Tasks/EditTask.vue';
 import DeleteTask from '@/Components/Tasks/DeleteTask.vue';
 import CompleteTask from '@/Components/Tasks/CompleteTask.vue';
 import { titleCase } from '@/helpers';
+import { toast } from '@/utils';
 
 const props = defineProps({
     tasks: {
@@ -61,6 +62,8 @@ const createTask = () => {
 
             taskForm.clearErrors();
             taskForm.reset();
+
+            toast({ title: 'Task created', status: 'success' });
         },
     });
 };
@@ -73,6 +76,8 @@ const updateTask = (task) => {
 
             taskForm.clearErrors();
             taskForm.reset();
+
+            toast({ title: 'Task updated', status: 'success' });
         },
     });
 };
@@ -113,6 +118,9 @@ const deleteTaskForm = useForm({});
 const deleteTask = () => {
     taskForm.delete(route('tasks.destroy', { task: taskToDelete.value.id }), {
         preserveScroll: true,
+        onSuccess: () => {
+            toast({ title: 'Task deleted', status: 'success' });
+        },
         onFinish: () => {
             closeDeleteTaskModal();
         },
@@ -145,29 +153,6 @@ const closeDeleteTaskModal = () => {
         <div class="py-12">
             <div class="mx-auto max-w-4xl sm:px-6 lg:px-8">
                 <div class="flex justify-end items-center mb-4">
-                    <Transition
-                        enter-active-class="transition ease-in-out"
-                        enter-from-class="opacity-0"
-                        leave-active-class="transition ease-in-out"
-                        leave-to-class="opacity-0"
-                    >
-                        <template>
-                            <p
-                                v-if="taskForm.recentlySuccessful"
-                                class="text-sm text-gray-600 dark:text-gray-400 mr-4"
-                            >
-                                Saved.
-                            </p>
-
-                            <p
-                                v-if="deleteTaskForm.recentlySuccessful"
-                                class="text-sm text-gray-600 dark:text-gray-400 mr-4"
-                            >
-                                Deleted.
-                            </p>
-                        </template>
-                    </Transition>
-
                     <PrimaryButton @click="openTaskModal" :disabled="taskForm.processing" dusk="create-task">New Task</PrimaryButton>
                 </div>
 
