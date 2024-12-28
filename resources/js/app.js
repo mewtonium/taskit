@@ -10,8 +10,7 @@ import { useTasksStore } from './stores/tasks';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
-const initTasksStore = (initialPage) => {
-    const { tasks, app } = initialPage.props;
+const initTasksStore = ({ tasks, app }) => {
     const store = useTasksStore()
 
     store.setTasks(tasks);
@@ -34,7 +33,9 @@ createInertiaApp({
         app.use(pinia);
         app.use(ZiggyVue);
 
-        initTasksStore(props.initialPage);
+        if (props.initialPage.props.auth?.user) {
+            initTasksStore(props.initialPage.props);
+        }
 
         return app.mount(el);
     },
