@@ -19,6 +19,7 @@
         "vue": "^3.4.0"
     },
     "dependencies": {
+        "@heroicons/vue": "^2.2.0",
         "dayjs": "^1.11.13",
         "pinia": "^2.3.0",
         "simple-notify": "^1.0.6"
