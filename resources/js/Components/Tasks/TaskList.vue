@@ -2,6 +2,7 @@
 import EditTask from '@/Components/Tasks/EditTask.vue';
 import DeleteTask from '@/Components/Tasks/DeleteTask.vue';
 import CompleteTask from '@/Components/Tasks/CompleteTask.vue';
+import StarTask from '@/Components/Tasks/StarTask.vue';
 import TaskPriorityIcon from '@/Components/Tasks/TaskPriorityIcon.vue';
 import { formatDate } from '@/helpers';
 import { usePage } from '@inertiajs/vue3';
@@ -30,7 +31,7 @@ const priorityNameByValue = (value) => {
 </script>
 
 <template>
-    <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
+    <div class="task-list overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
         <div class="p-6 text-gray-900 dark:text-gray-100">
             <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-8">
                 {{ title }}
@@ -55,7 +56,8 @@ const priorityNameByValue = (value) => {
                             {{ formatDate(task.start_at, 'DD/MM/YYYY') || '--' }}
                         </div>
 
-                        <div class="w-1/6 text-right space-x-2">
+                        <div class="w-1/6 text-right space-x-2 flex items-center justify-end">
+                            <StarTask class="task__star" :task="task" :dusk="`star-task--${task.id}`" />
                             <EditTask class="task__edit" :task="task" :dusk="`edit-task--${task.id}`" />
                             <DeleteTask class="task__delete" :task="task" :dusk="`delete-task--${task.id}`" />
                         </div>

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Star;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -21,11 +22,17 @@ class DatabaseSeeder extends Seeder
             ])
             ->count(10);
 
-        User::factory()
+        $user = User::factory()
             ->has($tasks)
             ->create([
                 'name' => 'Mark Wilkinson',
                 'email' => 'mark@example.com',
             ]);
+
+        foreach ($user->tasks as $task) {
+            if (rand(1, 10) <= 3) {
+                Star::factory()->forTask($task)->create();
+            }
+        }
     }
 }

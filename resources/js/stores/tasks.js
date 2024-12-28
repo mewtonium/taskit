@@ -16,17 +16,22 @@ export const useTasksStore = defineStore('tasks', {
     }),
 
     getters: {
-        todaysTasks: (state) => state.tasks.filter(task => dayjs(task.start_at).format(startDateFormat) === dayjs().format(startDateFormat)),
+        todaysTasks: (state) => state.tasks.filter(task => task.starred === null && dayjs(task.start_at).format(startDateFormat) === dayjs().format(startDateFormat)),
 
-        tomorrowsTasks: (state) => state.tasks.filter(task => dayjs(task.start_at).format(startDateFormat) === dayjs().add(1, 'day').format(startDateFormat)),
+        tomorrowsTasks: (state) => state.tasks.filter(task => task.starred === null && dayjs(task.start_at).format(startDateFormat) === dayjs().add(1, 'day').format(startDateFormat)),
 
         currentTasks: (state) => {
             const taskIds = state.todaysTasks
                 .map(task => task.id)
-                .concat(state.tomorrowsTasks.map(task => task.id))
+                .concat(
+                    state.tomorrowsTasks.map(task => task.id),
+                    state.starredTasks.map(task => task.id),
+                );
 
             return state.tasks.filter(task => ! taskIds.includes(task.id));
         },
+
+        starredTasks: (state) => state.tasks.filter(task => task.starred !== null),
 
         minStartDate: () => dayjs().format(startDateFormat),
     },

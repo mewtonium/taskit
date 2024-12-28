@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TaskStoreRequest;
+use App\Models\Star;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -17,6 +18,7 @@ class TaskController extends Controller
     {
         $tasks = $request->user()
             ->tasks()
+            ->with('starred')
             ->orderBy('priority')
             ->orderBy('start_at', 'desc')
             ->get();
@@ -70,6 +72,22 @@ class TaskController extends Controller
         $task->update([
             'completed_at' => $task->completed_at === null ? now() : null,
         ]);
+
+        return redirect()->route('tasks.index');
+    }
+
+    /**
+     * Mark the task as starred.
+     */
+    public function star(Task $task)
+    {
+        Gate::authorize('update', $task);
+
+        if ($task->starred) {
+            $task->starred->delete();
+        } else {
+            $task->starred()->save(new Star);
+        }
 
         return redirect()->route('tasks.index');
     }

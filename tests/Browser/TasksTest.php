@@ -77,3 +77,20 @@ test('a user can mark and see a task as complete', function () {
             ->assertScript("document.querySelector('.task:nth-child(1) .task__title').classList.contains('line-through')");
     });
 });
+
+test('a user can mark and see a task as starred', function () {
+    $this->browse(function (Browser $browser) {
+        $user = User::factory()
+            ->has(Task::factory()->count(3))
+            ->create();
+
+        $task = $user->tasks->first();
+
+        $browser
+            ->loginAs($user)
+            ->visitRoute('tasks.index')
+            ->press("@star-task--{$task->id}")
+            ->waitForRoute('tasks.index')
+            ->assertScript("document.querySelector('.task:nth-child(1) .task__starred').closest('.task-list').querySelector('h2').innerHTML === 'Starred Tasks'");
+    });
+});

@@ -18,6 +18,7 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('/tasks', TaskController::class)->only(['index', 'store', 'update', 'destroy']);
     Route::put('/tasks/{task}/complete', [TaskController::class, 'complete'])->name('tasks.complete');
+    Route::put('/tasks/{task}/star', [TaskController::class, 'star'])->name('tasks.star');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

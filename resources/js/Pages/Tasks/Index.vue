@@ -35,6 +35,7 @@ const store = useTasksStore();
                 </div>
 
                 <div class="space-y-6">
+                    <TaskList :tasks="store.starredTasks" title="Starred Tasks" />
                     <TaskList :tasks="store.todaysTasks" title="Today's Tasks" />
                     <TaskList :tasks="store.tomorrowsTasks" title="Tomorrow's Tasks" />
                     <TaskList :tasks="store.currentTasks" title="Current Tasks" />
