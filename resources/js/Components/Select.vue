@@ -1,7 +1,7 @@
 <script setup>
 const model = defineModel({
     type: [String, Number],
-    required: true,
+    required: false,
 });
 
 defineProps({

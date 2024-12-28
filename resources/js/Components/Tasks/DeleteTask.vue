@@ -1,14 +1,17 @@
 <script setup>
+import { useTasksStore } from '@/stores/tasks';
+
+const store = useTasksStore();
+
 const props = defineProps({
     task: Object,
     required: true
 });
 
-const emit = defineEmits(['deleteTask']);
-
 const deleteTask = () => {
-    emit('deleteTask', props.task);
-};
+    store.setDeletingTask(props.task);
+    store.setTaskAction('delete');
+}
 </script>
 
 <template>

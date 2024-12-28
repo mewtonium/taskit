@@ -1,14 +1,17 @@
 <script setup>
+import { useTasksStore } from '@/stores/tasks';
+
+const store = useTasksStore();
+
 const props = defineProps({
     task: Object,
     required: true
 });
 
-const emit = defineEmits(['editTask']);
-
 const editTask = () => {
-    emit('editTask', props.task);
-};
+    store.setEditingTask(props.task);
+    store.setTaskAction('edit');
+}
 </script>
 
 <template>

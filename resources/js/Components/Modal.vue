@@ -16,7 +16,7 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(['close']);
+const emit = defineEmits(['open', 'close']);
 const dialog = ref();
 const showSlot = ref(props.show);
 
@@ -28,6 +28,8 @@ watch(
             showSlot.value = true;
 
             dialog.value?.showModal();
+
+            emit('open');
         } else {
             document.body.style.overflow = '';
 

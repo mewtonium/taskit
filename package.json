@@ -20,6 +20,7 @@
     },
     "dependencies": {
         "dayjs": "^1.11.13",
+        "pinia": "^2.3.0",
         "simple-notify": "^1.0.6"
     }
 }

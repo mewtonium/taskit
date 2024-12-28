@@ -15,8 +15,14 @@ class TaskController extends Controller
      */
     public function index(Request $request)
     {
+        $tasks = $request->user()
+            ->tasks()
+            ->orderBy('priority')
+            ->orderBy('start_at', 'desc')
+            ->get();
+
         return Inertia::render('Tasks/Index', [
-            'tasks' => $request->user()->tasks()->orderBy('priority')->get(),
+            'tasks' => $tasks,
         ]);
     }
 
