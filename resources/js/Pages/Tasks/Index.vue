@@ -1,5 +1,6 @@
 <script setup>
-import { Head } from '@inertiajs/vue3';
+import { onBeforeMount } from 'vue';
+import { Head, usePage } from '@inertiajs/vue3';
 
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -9,6 +10,14 @@ import DeleteTaskModal from '@/Components/Tasks/Modals/DeleteTaskModal.vue';
 import { useTasksStore } from '@/stores/tasks';
 
 const store = useTasksStore();
+
+onBeforeMount(() => {
+    const { app, tasks } = usePage().props; 
+
+    store.setTasks(tasks);
+    store.setDefaultTaskPriority(app.tasks.defaultPriority);
+    store.setTaskPriorityOptions(app.tasks.priorities);
+});
 </script>
 
 <template>

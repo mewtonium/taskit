@@ -10,14 +10,6 @@ import { useTasksStore } from './stores/tasks';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
-const initTasksStore = ({ tasks, app }) => {
-    const store = useTasksStore()
-
-    store.setTasks(tasks);
-    store.setDefaultTaskPriority(app.tasks.defaultPriority);
-    store.setTaskPriorityOptions(app.tasks.priorities);
-}
-
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
     resolve: (name) =>
@@ -32,10 +24,6 @@ createInertiaApp({
         app.use(plugin);
         app.use(pinia);
         app.use(ZiggyVue);
-
-        if (props.initialPage.props.auth?.user) {
-            initTasksStore(props.initialPage.props);
-        }
 
         return app.mount(el);
     },
