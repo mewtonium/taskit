@@ -47,7 +47,7 @@ const priorityNameByValue = (value) => {
                             <CompleteTask :task="task" class="task__complete mr-3" :dusk="`complete-task--${task.id}`" />
                             <div class="flex items-center space-x-1">
                                 <TaskPriorityIcon :priority="priorityNameByValue(task.priority)" />
-                                <span class="task__title truncate" :class="{ 'line-through text-gray-300 dark:text-gray-700': task.completed_at !== null }" v-text="task.title" />
+                                <span class="task__title text-ellipsis" :class="{ 'line-through text-gray-300 dark:text-gray-700': task.completed_at !== null }" v-text="task.title" />
                             </div>
                         </div>
 
