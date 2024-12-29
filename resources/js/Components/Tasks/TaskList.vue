@@ -1,11 +1,5 @@
 <script setup>
-import EditTask from '@/Components/Tasks/EditTask.vue';
-import DeleteTask from '@/Components/Tasks/DeleteTask.vue';
-import CompleteTask from '@/Components/Tasks/CompleteTask.vue';
-import StarTask from '@/Components/Tasks/StarTask.vue';
-import TaskPriorityIcon from '@/Components/Tasks/TaskPriorityIcon.vue';
-import { formatDate } from '@/helpers';
-import { usePage } from '@inertiajs/vue3';
+import Task from '@/Components/Tasks/Task.vue';
 
 defineProps({
     tasks: {
@@ -17,17 +11,6 @@ defineProps({
         required: true
     },
 });
-
-const priorityNameByValue = (value) => {
-    const priorities = usePage().props.app.tasks.priorities;
-    const priority = Object.keys(priorities).find(key => priorities[key] === value);
-
-    if (priority === undefined) {
-        return ''
-    }
-
-    return priority;
-}
 </script>
 
 <template>
@@ -43,25 +26,7 @@ const priorityNameByValue = (value) => {
 
             <template v-else>
                 <div class="divide-y dark:divide-gray-500">
-                    <div v-for="task in tasks" :key="task.id" class="task py-2 flex justify-between">
-                        <div class="text-left text-gray-900 dark:text-gray-100 flex items-center w-2/3">
-                            <CompleteTask :task="task" class="task__complete mr-3" :dusk="`complete-task--${task.id}`" />
-                            <div class="flex items-center space-x-1">
-                                <TaskPriorityIcon :priority="priorityNameByValue(task.priority)" />
-                                <span class="task__title text-ellipsis" :class="{ 'line-through text-gray-300 dark:text-gray-700': task.completed_at !== null }" v-text="task.title" />
-                            </div>
-                        </div>
-
-                        <div class="w-1/6 flex items-center justify-center">
-                            {{ formatDate(task.start_at, 'DD/MM/YYYY') || '--' }}
-                        </div>
-
-                        <div class="w-1/6 text-right space-x-2 flex items-center justify-end">
-                            <StarTask class="task__star" :task="task" :dusk="`star-task--${task.id}`" />
-                            <EditTask class="task__edit" :task="task" :dusk="`edit-task--${task.id}`" />
-                            <DeleteTask class="task__delete" :task="task" :dusk="`delete-task--${task.id}`" />
-                        </div>
-                    </div>
+                    <Task v-for="task in tasks" :key="task.id" :task="task" />
                 </div>
             </template>
         </div>

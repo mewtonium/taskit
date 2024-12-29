@@ -94,3 +94,19 @@ test('a user can mark and see a task as starred', function () {
             ->assertScript("document.querySelector('.task:nth-child(1) .task__starred').closest('.task-list').querySelector('h2').innerHTML === 'Starred Tasks'");
     });
 });
+
+test('a user can open and see task notes', function () {
+    $this->browse(function (Browser $browser) {
+        $user = User::factory()
+            ->has(Task::factory()->count(1))
+            ->create();
+
+        $task = $user->tasks->first();
+
+        $browser
+            ->loginAs($user)
+            ->visitRoute('tasks.index')
+            ->press("@task-notes--{$task->id}")
+            ->assertSee($task->notes);
+    });
+});

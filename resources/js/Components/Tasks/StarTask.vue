@@ -24,7 +24,7 @@ const starTask = () => {
 </script>
 
 <template>
-    <button @click="starTask" class="text-amber-400 hover:text-yellow-300" :class="{ 'task__starred': task.starred }">
+    <button @click="starTask" class="text-amber-400 hover:text-yellow-300 transition-colors" :class="{ 'task__starred': task.starred }">
         <StarIconSolid v-if="task.starred" class="size-6" />
         <StarIconOutline v-else class="size-6" />
     </button>
